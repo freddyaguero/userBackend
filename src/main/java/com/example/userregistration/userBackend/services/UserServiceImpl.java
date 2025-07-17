@@ -33,7 +33,9 @@ public class UserServiceImpl implements UserService{
 
         UserResponse userResponse = new UserResponse();
         LocalDateTime now = LocalDateTime.now();
-
+        user.getPhones().forEach(phone ->
+          phone.setUser(user)
+        );
         User userBD =userRepository.save(user);
 
         userResponse.setId(userBD.getId());
