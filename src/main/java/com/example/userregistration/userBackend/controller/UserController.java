@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.userregistration.userBackend.dto.UserError;
 import com.example.userregistration.userBackend.dto.UserFieldError;
-import com.example.userregistration.userBackend.dto.UserResponse;
+import com.example.userregistration.userBackend.dto.UserRequestDTO;
 import com.example.userregistration.userBackend.entity.User;
 import com.example.userregistration.userBackend.services.UserService;
 import com.example.userregistration.userBackend.utils.UtilValidation;
@@ -51,9 +52,10 @@ public class UserController {
     private String emailRegex2;
 
     
-  
+   
+
     @PostMapping("/sign-up")
-	public ResponseEntity<?> createUser(@Valid @RequestBody User user, BindingResult result) {
+	public ResponseEntity<?> createUser(@Valid @RequestBody UserRequestDTO user, BindingResult result) {
         
  
         LocalDateTime now = LocalDateTime.now();
@@ -121,5 +123,28 @@ public class UserController {
 
 
 
+
+    @GetMapping("/login")
+	public ResponseEntity<?> loginUser(@RequestBody UserRequestDTO user) {
+        LocalDateTime now = LocalDateTime.now();
+        UserError userError= new UserError();
+        List<UserFieldError> errors = new ArrayList<>();
+
+        Optional<User> userOptional= userService.findByEmail(user.getEmail());
+        if (!userOptional.isPresent()) {
+                String fieldErrors ="email";
+                String messageErrors = "de usuario no existe en la base de datos";  
+                UserFieldError userFieldError = new UserFieldError();
+                userFieldError.setTimestamp(now);
+                userFieldError.setDetail(fieldErrors+" "+messageErrors);
+                userFieldError.setCodigo(4);
+                errors.add(userFieldError);
+                userError.setErrors(errors); 
+                return ResponseEntity.badRequest().body(userError);
+        }
+
+        return ResponseEntity.status(HttpStatus.FOUND).body(userOptional.get());
+
+    }
 
 }

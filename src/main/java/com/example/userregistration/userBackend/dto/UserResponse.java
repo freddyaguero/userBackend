@@ -1,6 +1,9 @@
 package com.example.userregistration.userBackend.dto;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 
 
 public class UserResponse {
@@ -10,6 +13,13 @@ public class UserResponse {
     private LocalDateTime lastLogin;
     private String token;
     private boolean isActive;
+    private String name;
+    private String email;
+    private String password;
+    private List<PhoneRequestDTO> phones = new ArrayList<>();
+
+
+
     
     public Long getId() {
         return id;
@@ -46,6 +56,30 @@ public class UserResponse {
     }
     public void setActive(boolean isActive) {
         this.isActive = isActive;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getEmail() {
+        return email;
+    }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+    public String getPassword() {
+        return password;
+    }
+    public void setPassword(String password) {
+        this.password = password;
+    }
+    public List<PhoneRequestDTO> getPhones() {
+        return phones;
+    }
+    public void setPhones(List<PhoneRequestDTO> phones) {
+        this.phones = phones;
     }
 
     

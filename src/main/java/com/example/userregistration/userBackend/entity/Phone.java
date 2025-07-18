@@ -5,27 +5,37 @@ import javax.persistence.*;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "phone")
+@Table(name = "tbl_phones")
 public class Phone {
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String number;
-	private String citycode;
+	private long number;
+	private int citycode;
 	private String countrycode;
 
  
-    public String getNumber() {
+    public Phone() {
+    }
+
+    public Phone(long number, int citycode, String countrycode, User user) {
+        this.number = number;
+        this.citycode = citycode;
+        this.countrycode = countrycode;
+        this.user = user;
+    }
+
+    public long getNumber() {
         return number;
     }
-    public void setNumber(String number) {
+    public void setNumber(long number) {
         this.number = number;
     }
-    public String getCitycode() {
+    public int getCitycode() {
         return citycode;
     }
-    public void setCitycode(String citycode) {
+    public void setCitycode(int citycode) {
         this.citycode = citycode;
     }
     public String getCountrycode() {
