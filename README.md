@@ -22,7 +22,7 @@ En una ventana de comandos.
    mkdir proyecto
 2. Entrar a la carpeta:
    cd proyecto
-3. Clonar proyecto
+3. Clonar proyecto:
     git clone https://github.com/freddyaguero/userBackend.git
 4. Entrar a la carpeta del proyecto clonado:
    cd userBackend
@@ -37,12 +37,14 @@ Continuando en la ventana de comandos anterior
     gradle test
 2. Construir el proyecto con gradle: 
     gradle build
-3. Ejecutar el proyecto
+3. Ejecutar el proyecto: 
 java -jar build/libs/userbackend-0.0.1-SNAPSHOT.jar
 
 Probar los servicios con una herramienta como POSTMAN
 -----------------------------------------------------
-1. Se dejan los collection de prueba en la carpeta: postman
+1. Se dejan los collection de prueba en la carpeta: 
+   postman
+2. Documento con pruebas de postman.
 
 
 Verificación de la base de datos H2
