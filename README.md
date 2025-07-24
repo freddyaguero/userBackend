@@ -35,7 +35,7 @@ Ejecutar test, Construir y ejecutar el proyecto con gradle
 Continuando en la ventana de comandos anterior
 1. Ejecutar test:
     gradle test
-2. Construir el proyecto con gradle
+2. Construir el proyecto con gradle: 
     gradle build
 3. Ejecutar el proyecto
 java -jar build/libs/userbackend-0.0.1-SNAPSHOT.jar
