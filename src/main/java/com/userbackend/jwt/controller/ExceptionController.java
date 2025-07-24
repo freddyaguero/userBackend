@@ -89,10 +89,10 @@ public class ExceptionController {
          UserFieldError userFieldError = new UserFieldError();
                 userFieldError.setTimestamp(LocalDateTime.now());
                 userFieldError.setDetail (ex.getErrorMessage());
-                userFieldError.setCodigo(400);
+                userFieldError.setCodigo(404);
                 errors.add(userFieldError);
                 userError.setErrors(errors); 
-         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userError);
+         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(userError);
     }
 
     @ExceptionHandler(JwtException.class)
