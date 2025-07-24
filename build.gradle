@@ -1,0 +1,57 @@
+
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'org.springframework.boot' version '2.5.14' 
+    id 'java'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+dependencies {
+    api libs.org.hibernate.validator.hibernate.validator
+    api libs.org.springframework.boot.spring.boot.starter.data.jpa
+    api libs.org.springframework.boot.spring.boot.starter.security
+    api libs.org.springframework.boot.spring.boot.starter.web
+    api libs.io.jsonwebtoken.jjwt
+    api libs.org.json.json
+    api libs.jakarta.xml.bind.jakarta.xml.bind.api
+    runtimeOnly libs.com.h2database.h2
+    runtimeOnly libs.org.springframework.boot.spring.boot.devtools
+    testImplementation libs.org.springframework.boot.spring.boot.starter.test
+    testImplementation libs.org.springframework.security.spring.security.test
+}
+
+
+group = 'com.userbackend'
+version = '0.0.1-SNAPSHOT'
+description = 'Registro de usuario con jwt'
+archivesBaseName = 'userbackend'
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'com.userbackend.jwt.UserBackendApplication'
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = 'UTF-8'
+}
