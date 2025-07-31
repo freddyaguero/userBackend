@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.userbackend.jwt.dto.UserError;
 import com.userbackend.jwt.dto.UserFieldError;
+import com.userbackend.jwt.exception.InvalidEmailException;
+import com.userbackend.jwt.exception.InvalidPasswordException;
+import com.userbackend.jwt.exception.InvalidTokenException;
 import com.userbackend.jwt.exception.JwtException;
 import com.userbackend.jwt.exception.SignatureException;
 import com.userbackend.jwt.exception.UnauthorizedException;
@@ -101,7 +104,7 @@ public class ExceptionController {
          List<UserFieldError> errors = new ArrayList<>();
          UserFieldError userFieldError = new UserFieldError();
                 userFieldError.setTimestamp(LocalDateTime.now());
-                userFieldError.setDetail (ex.getErrorMessage());
+                userFieldError.setDetail ("Error con JWT enviado");
                 userFieldError.setCodigo(400);
                 errors.add(userFieldError);
                 userError.setErrors(errors); 
@@ -131,6 +134,49 @@ public class ExceptionController {
          UserFieldError userFieldError = new UserFieldError();
                 userFieldError.setTimestamp(LocalDateTime.now());
                 userFieldError.setDetail (ex.getMessage());
+                userFieldError.setCodigo(400);
+                errors.add(userFieldError);
+                userError.setErrors(errors); 
+         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userError);
+    }
+
+ 
+    @ExceptionHandler(InvalidPasswordException.class)
+    public ResponseEntity<Object> handleInvalidPasswordException(InvalidPasswordException ex) {
+         UserError userError= new UserError();
+         List<UserFieldError> errors = new ArrayList<>();
+         UserFieldError userFieldError = new UserFieldError();
+                userFieldError.setTimestamp(LocalDateTime.now());
+                userFieldError.setDetail (ex.getErrorMessage());
+                userFieldError.setCodigo(400);
+                errors.add(userFieldError);
+                userError.setErrors(errors); 
+         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userError);
+    }
+
+    
+    @ExceptionHandler(InvalidEmailException.class)
+    public ResponseEntity<Object> handleInvalidEmailException(InvalidEmailException ex) {
+         UserError userError= new UserError();
+         List<UserFieldError> errors = new ArrayList<>();
+         UserFieldError userFieldError = new UserFieldError();
+                userFieldError.setTimestamp(LocalDateTime.now());
+                userFieldError.setDetail (ex.getErrorMessage());
+                userFieldError.setCodigo(400);
+                errors.add(userFieldError);
+                userError.setErrors(errors); 
+         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(userError);
+    }
+
+    
+
+    @ExceptionHandler(InvalidTokenException.class)
+    public ResponseEntity<Object> handleInvalidTokenException(InvalidTokenException ex) {
+         UserError userError= new UserError();
+         List<UserFieldError> errors = new ArrayList<>();
+         UserFieldError userFieldError = new UserFieldError();
+                userFieldError.setTimestamp(LocalDateTime.now());
+                userFieldError.setDetail (ex.getErrorMessage());
                 userFieldError.setCodigo(400);
                 errors.add(userFieldError);
                 userError.setErrors(errors); 

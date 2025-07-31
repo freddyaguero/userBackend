@@ -39,6 +39,8 @@ public class User {
 
     private boolean isActive;
 
+    private String token;
+
     public LocalDateTime getCreated() {
         return created;
     }
@@ -143,6 +145,18 @@ public class User {
 
     public void setPhones(List<Phone> phones) {
         this.phones = phones;
+    }
+
+
+
+    public String getToken() {
+        return token;
+    }
+
+
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
 }

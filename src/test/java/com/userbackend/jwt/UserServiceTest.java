@@ -2,6 +2,7 @@ package com.userbackend.jwt;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -18,9 +19,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 import com.userbackend.jwt.data.Data;
+import com.userbackend.jwt.dto.UserRequestDTO;
 import com.userbackend.jwt.dto.UserResponseDTO;
 import com.userbackend.jwt.entity.Phone;
 import com.userbackend.jwt.entity.User;
+import com.userbackend.jwt.exception.InvalidEmailException;
+import com.userbackend.jwt.exception.InvalidPasswordException;
+import com.userbackend.jwt.exception.InvalidTokenException;
+import com.userbackend.jwt.exception.UserNotExistException;
 import com.userbackend.jwt.repository.UserRepository;
 import com.userbackend.jwt.services.UserServiceImpl;
 
@@ -39,9 +45,13 @@ public class UserServiceTest {
     @InjectMocks
     UserServiceImpl userService;
 
-   
-    
-     
+    @Before
+    public void setUp() {
+        userService.setCapitalRegex("[A-Z]");
+        userService.setNumbersRegex("[0-9]");
+        userService.setEmailRegex1("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@");
+        userService.setEmailRegex2("[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$");
+    }
 
     @Test
 	public void findByEmail() {
@@ -64,11 +74,74 @@ public class UserServiceTest {
            
 	}
 
+    @Test
+	public void testInvalidPasswordException() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO();
+        userRequestDTO.setPassword("");
+
+        try {
+
+             UserResponseDTO saved = userService.save(userRequestDTO);
+           
+        } catch (InvalidPasswordException e) {
+            assertEquals("password no puede ser nulo ni blanco", e.getErrorMessage());
+        }
+
+    }
+    @Test
+	public void testInvalidEmailException() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO();
+        userRequestDTO.setPassword("Ao1h2hjji");
+        userRequestDTO.setEmail("");
+
+        try {
+
+             UserResponseDTO saved = userService.save(userRequestDTO);
+           
+        } catch (InvalidEmailException e) {
+            assertEquals("email no puede ser nulo ni blanco", e.getErrorMessage());
+        }
+
+    }
 
     @Test
-	public void save() {
+	public void testInvalidFormatEmailException() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO();
+        userRequestDTO.setPassword("Ao1h2hjji");
+        userRequestDTO.setEmail("pepe@gmail");
 
-        User userDB = new User("prueba", "prueba@gmail.cl", "12345");
+        try {
+             
+             UserResponseDTO saved = userService.save(userRequestDTO);
+           
+        } catch (InvalidEmailException e) {
+            assertEquals("email el formato no es válido", e.getErrorMessage());
+        }
+
+    }
+
+
+ @Test
+	public void testInvalidFormatPasswordException() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO();
+        userRequestDTO.setPassword("Ao1h2hjjiPP");
+        userRequestDTO.setEmail("pepe@gmail.cl");
+
+        try {
+        
+             UserResponseDTO saved = userService.save(userRequestDTO);
+           
+        } catch (InvalidPasswordException e) {
+            assertEquals("password debe tener una Mayúscula y dos números", e.getErrorMessage());
+        }
+
+    }
+
+    
+    @Test
+	public void save() {  
+
+        User userDB = new User("prueba", "prueba@gmail.cl", "Ao1h2hjji");
         
         userDB.setId(UUID.randomUUID());
         userDB.setCreated(LocalDateTime.now());
@@ -83,13 +156,12 @@ public class UserServiceTest {
 
         userDB.setPhones(phonesDB);
 
-
         when(userRepository.save(any(User.class))).thenReturn(userDB);
-        UserResponseDTO saved = userService.save(Data.getUserRequestDTO(), Data.getToken());
+        UserResponseDTO saved = userService.save(Data.getUserRequestDTO());
 
         assertNotNull(saved);
-        assertEquals("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjdXF1aUBnbWFpbC5jbCIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3NTMxNDc5NDksImV4cCI6MTc1MzE0ODAwOX0.iA1LbzA3g5tWlZD40JFUF2_u-OEqzQtQ387IQDYRRagVSHNbXjpMcDDfGy_nO-FLDsYstJtxvlp4RZBJNZkYiQ"
-           , saved.getToken());
+        assertEquals("prueba@gmail.cl"
+           , saved.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
            
 	}
@@ -97,7 +169,7 @@ public class UserServiceTest {
     @Test
 	public void saveWithoutNameAndPhones() {
 
-        User userDB = new User(null, "prueba@gmail.cl", "12345");
+        User userDB = new User(null, "prueba@gmail.cl", "Ao1h2hjji");
         
         userDB.setId(UUID.randomUUID());
         userDB.setCreated(LocalDateTime.now());
@@ -106,29 +178,54 @@ public class UserServiceTest {
 
 
         when(userRepository.save(any(User.class))).thenReturn(userDB);
-        UserResponseDTO saved = userService.save(Data.getUserRequestDTO(), Data.getToken());
+        UserResponseDTO saved = userService.save(Data.getUserRequestDTO());
 
         assertNotNull(saved);
-        assertEquals("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjdXF1aUBnbWFpbC5jbCIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3NTMxNDc5NDksImV4cCI6MTc1MzE0ODAwOX0.iA1LbzA3g5tWlZD40JFUF2_u-OEqzQtQ387IQDYRRagVSHNbXjpMcDDfGy_nO-FLDsYstJtxvlp4RZBJNZkYiQ"
-           , saved.getToken());
+        assertEquals("prueba@gmail.cl"
+           , saved.getEmail());
         verify(userRepository, times(1)).save(any(User.class));
    
 	}
 
 
+
+    @Test
+	public void testInvalidTokenException() {
+        String authorizationHeader="";
+        try {
+
+             Optional<UserResponseDTO> userResponseDTOOptional =userService.loadUser( authorizationHeader);
+           
+        } catch (InvalidTokenException e) {
+            assertEquals("Token no válido", e.getErrorMessage());
+        }
+
+    }
+
+    
+
     @Test
     public void loadUserIsNotPresent() {
   
-           User user= new User("prueba", "prueba@gmail.cl", "12345");
+           User user= new User("prueba", "prueba@gmail.cl", "Ao1h2hjji");
            Optional<User>  userOpt= Optional.of(user);
 
            lenient().when(userRepository.findByEmail("prueba@gmail.com")).thenReturn(userOpt); 
-           
-           Optional<UserResponseDTO> userResponseDTOOptional =userService.loadUser(Data.getUserRequestDTO(), Data.getToken());
 
-           assertEquals(false, userResponseDTOOptional.isPresent());
+           String authorizationHeader="Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwZXBlQGdtYWlsLmNsIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTc1Mzk3MzQzNywiZXhwIjoxNzUzOTczNDk3fQ.IgfN3Ut_dG94e0Yg3pfmLdOxAsM7UChdR40abw9ChljlFH1H_PPRa1te5yjc0L2y-dhH6pS7obZtANiX6XSDrw";
+
+
+            try {
+
+                 Optional<UserResponseDTO> userResponseDTOOptional =userService.loadUser( authorizationHeader);
+           
+            } catch (UserNotExistException e) {
+                assertEquals("email de usuario no existe en la base de datos", e.getErrorMessage());
+            }
+       
 
           
     }
+           
           
 }

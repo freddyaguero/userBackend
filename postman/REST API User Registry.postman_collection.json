@@ -146,43 +146,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "Get login User Not Exist",
-			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJjdXF1aUBnbWFpbC5jbCIsImF1dGhvcml0aWVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3NTMzMDk1OTMsImV4cCI6MTc1MzMwOTY1M30.UX84yhPQ3inOjYwjDTLM75RWJrnof7mDCLNcsgEUtOiyfYQY7Am9ptnrBGwnZy5Pfy5B86MuJUfDhOibSwfw_Q",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\"email\": \"xxx@gmail.cl\"}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "localhost:8080/login",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"login"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"event": [

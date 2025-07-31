@@ -9,12 +9,7 @@ import javax.validation.constraints.Size;
 
 public class UserRequestDTO {
     private String name;
-
-    @NotNull
 	private String email;
-	
-    @NotNull
-    @Size(min=8,max=12)
 	private String password;
     
     private List<PhoneRequestDTO> phones = new ArrayList<>();

@@ -26,7 +26,7 @@ public class Data {
     }
 
     public static UserRequestDTO getUserRequestDTO() {
-        UserRequestDTO userRequestDTO = new UserRequestDTO("prueba", "prueba@gmail.cl", "12345");
+        UserRequestDTO userRequestDTO = new UserRequestDTO("prueba", "prueba@gmail.cl", "Ao1h2hjji");
         List<PhoneRequestDTO> phones = new ArrayList<>();
         PhoneRequestDTO phone = new PhoneRequestDTO(1112564563, 1, "56");
         phones.add(phone);
