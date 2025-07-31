@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.userbackend.jwt.UserServiceTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2025-07-31T17:11:03.791Z" hostname="MINIPC_FREDDY" time="0.163">
+  <properties/>
+  <testcase name="loadUserIsNotPresent" classname="com.userbackend.jwt.UserServiceTest" time="0.012"/>
+  <testcase name="testInvalidTokenException" classname="com.userbackend.jwt.UserServiceTest" time="0.0"/>
+  <testcase name="testInvalidEmailException" classname="com.userbackend.jwt.UserServiceTest" time="0.0"/>
+  <testcase name="save" classname="com.userbackend.jwt.UserServiceTest" time="0.146"/>
+  <testcase name="testInvalidPasswordException" classname="com.userbackend.jwt.UserServiceTest" time="0.001"/>
+  <testcase name="testInvalidFormatPasswordException" classname="com.userbackend.jwt.UserServiceTest" time="0.0"/>
+  <testcase name="testInvalidFormatEmailException" classname="com.userbackend.jwt.UserServiceTest" time="0.0"/>
+  <testcase name="findByEmail" classname="com.userbackend.jwt.UserServiceTest" time="0.0"/>
+  <testcase name="saveWithoutNameAndPhones" classname="com.userbackend.jwt.UserServiceTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

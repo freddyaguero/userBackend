@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.userbackend.jwt.UserControllerTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2025-07-24T15:18:42.064Z" hostname="MINIPC_FREDDY" time="0.029">
+  <properties/>
+  <testcase name="loadUserIsNotPresent" classname="com.userbackend.jwt.UserControllerTest" time="0.011"/>
+  <testcase name="save" classname="com.userbackend.jwt.UserControllerTest" time="0.016"/>
+  <testcase name="findByEmail" classname="com.userbackend.jwt.UserControllerTest" time="0.001"/>
+  <testcase name="saveWithoutNameAndPhones" classname="com.userbackend.jwt.UserControllerTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
