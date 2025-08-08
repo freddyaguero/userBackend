@@ -184,7 +184,7 @@ public class UserServiceImpl implements UserService{
         UserResponseDTO userResponse=null;
 
         String email=UtilToken.getEmailFromToken(authorizationHeader);
-        if (email == null ) {
+        if (email == null || email.equals("")) {
            throw new InvalidTokenException("Token no válido");
         }
         Optional<User> userOptional=userRepository.findByEmail(email);
@@ -192,6 +192,7 @@ public class UserServiceImpl implements UserService{
 
             userResponse = new UserResponseDTO();
             User userDB = userOptional.get();
+
 
             if (!UtilToken.getToken(authorizationHeader).equals(userDB.getToken())){
                throw new InvalidTokenException("Token no válido");

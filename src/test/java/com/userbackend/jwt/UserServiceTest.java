@@ -26,9 +26,11 @@ import com.userbackend.jwt.entity.User;
 import com.userbackend.jwt.exception.InvalidEmailException;
 import com.userbackend.jwt.exception.InvalidPasswordException;
 import com.userbackend.jwt.exception.InvalidTokenException;
+import com.userbackend.jwt.exception.UserExistException;
 import com.userbackend.jwt.exception.UserNotExistException;
 import com.userbackend.jwt.repository.UserRepository;
 import com.userbackend.jwt.services.UserServiceImpl;
+import com.userbackend.jwt.utils.UtilToken;
 
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -41,6 +43,9 @@ public class UserServiceTest {
 
     @Mock
     UserRepository userRepository;
+
+    @Mock
+    UtilToken UtilToken;
 
     @InjectMocks
     UserServiceImpl userService;
@@ -226,6 +231,174 @@ public class UserServiceTest {
 
           
     }
+
+
+     @Test
+    public void getValuesProperties() {
+        String capitalRegex = userService.getCapitalRegex();
+        String numbersRegex = userService.getNumbersRegex();
+        String emailRegex1= userService.getEmailRegex1();
+        String emailRegex2= userService.getEmailRegex2();
+
+        assertEquals("[A-Z]", capitalRegex);
+        assertEquals("[0-9]", numbersRegex);
+        assertEquals("^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@", emailRegex1);
+        assertEquals("[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$", emailRegex2);
            
+    }   
+
+
+   
+
+    @Test
+	public void testSizeInvalidPasswordException() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO();
+        userRequestDTO.setPassword("12345");
+        userRequestDTO.setEmail("pepe@gmail.cl");
+
+        try {
+
+             UserResponseDTO saved = userService.save(userRequestDTO);
+           
+        } catch (InvalidPasswordException e) {
+            assertEquals("password debe tener nínimo 8 y máximo 12 caracteres", e.getErrorMessage());
+        }
+
+    }
+
+
+
+
+    @Test
+	public void testUserExistException() {
+        UserRequestDTO userRequestDTO = new UserRequestDTO();
+        userRequestDTO.setPassword("Ao1h2hjji");
+        userRequestDTO.setEmail("prueba@gmail.cl");
+
+        Optional<User>  userOpt= Optional.of(new User("prueba", "prueba@gmail.cl","Ao1h2hjji"));
+
           
+
+        try {
+            User userDB = new User("prueba", "prueba@gmail.cl", "Ao1h2hjji");
+        
+            userDB.setId(UUID.randomUUID());
+            userDB.setCreated(LocalDateTime.now());
+            userDB.setModified(LocalDateTime.now());
+            userDB.setActive(true);
+
+            List<Phone> phonesDB = new ArrayList<>();
+            Phone phone = new  Phone(1112564563, 1, "56", userDB);
+            phone.setId(UUID.randomUUID());
+            phone.setUser(userDB);
+            phonesDB.add(phone);
+
+            userDB.setPhones(phonesDB);
+
+            when(userRepository.findByEmail(any(String.class))).thenReturn(userOpt); 
+            UserResponseDTO saved = userService.save(Data.getUserRequestDTO());  
+           
+        } catch (UserExistException e) {
+            assertEquals("email de usuario ya existe en la base de datos", e.getErrorMessage());
+        }
+
+    }
+
+
+    
+
+    @Test
+    public void testLoadUserInvalidTokenException() {
+  
+           User user= new User("prueba", null, "Ao1h2hjji");
+           Optional<User>  userOpt= Optional.of(user);
+
+           when(userRepository.findByEmail(any(String.class))).thenReturn(userOpt); 
+
+           String authorizationHeader="Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwZXBlQGdtYWlsLmNsIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTc1Mzk3MzQzNywiZXhwIjoxNzUzOTczNDk3fQ.IgfN3Ut_dG94e0Yg3pfmLdOxAsM7UChdR40abw9ChljlFH1H_PPRa1te5yjc0L2y-dhH6pS7obZtANiX6XSDrw";
+
+
+            try {
+
+                 Optional<UserResponseDTO> userResponseDTOOptional =userService.loadUser( authorizationHeader);
+           
+            } catch (InvalidTokenException e) {
+                assertEquals("Token no válido", e.getErrorMessage());
+            }
+       
+
+          
+    }
+
+    @Test
+    public void testLoadUser() {
+  
+           User user= new User("prueba", "pepe@gmail.com", "Ao1h2hjji");
+           user.setToken("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwZXBlQGdtYWlsLmNsIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTc1Mzk3MzQzNywiZXhwIjoxNzUzOTczNDk3fQ.IgfN3Ut_dG94e0Yg3pfmLdOxAsM7UChdR40abw9ChljlFH1H_PPRa1te5yjc0L2y-dhH6pS7obZtANiX6XSDrw");
+           List<Phone> phones = new ArrayList<>();
+           Phone phone = new  Phone(1112564563, 1, "56", user);
+           phone.setId(UUID.randomUUID());
+           phone.setUser(user);
+           phones.add(phone);
+           user.setPhones(phones);
+           Optional<User>  userOpt= Optional.of(user);
+
+           when(userRepository.findByEmail(any(String.class))).thenReturn(userOpt); 
+
+           String authorizationHeader="Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwZXBlQGdtYWlsLmNsIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTc1Mzk3MzQzNywiZXhwIjoxNzUzOTczNDk3fQ.IgfN3Ut_dG94e0Yg3pfmLdOxAsM7UChdR40abw9ChljlFH1H_PPRa1te5yjc0L2y-dhH6pS7obZtANiX6XSDrw";
+
+           Optional<UserResponseDTO> userResponseDTOOptional =userService.loadUser( authorizationHeader);
+           
+           assertEquals(((User)userOpt.get()).getEmail(), "pepe@gmail.com");     
+          
+    }
+
+
+
+    @Test
+    public void testLoadUserInvalidTokenExceptionAuth() {
+  
+           User user= new User("prueba", "pepe@gmail.com", "Ao1h2hjji");
+           user.setToken("JhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwZXBlQGdtYWlsLmNsIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTc1Mzk3MzQzNywiZXhwIjoxNzUzOTczNDk3fQ.IgfN3Ut_dG94e0Yg3pfmLdOxAsM7UChdR40abw9ChljlFH1H_PPRa1te5yjc0L2y-dhH6pS7obZtANiX6XSDrw");
+           Optional<User>  userOpt= Optional.of(user);
+
+           when(userRepository.findByEmail(any(String.class))).thenReturn(userOpt); 
+
+           String authorizationHeader="Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJwZXBlQGdtYWlsLmNsIiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImlhdCI6MTc1Mzk3MzQzNywiZXhwIjoxNzUzOTczNDk3fQ.IgfN3Ut_dG94e0Yg3pfmLdOxAsM7UChdR40abw9ChljlFH1H_PPRa1te5yjc0L2y-dhH6pS7obZtANiX6XSDrw";
+
+
+           try {
+
+                  Optional<UserResponseDTO> userResponseDTOOptional =userService.loadUser( authorizationHeader);
+           
+            } catch (InvalidTokenException e) {
+                assertEquals("Token no válido", e.getErrorMessage());
+            }
+           
+             
+          
+    }
+
+    @Test
+    public void testLoadUserInvalidTokenExceptionAuthEmail() {
+  
+           User user= new User("prueba", null, "Ao1h2hjji");
+           Optional<User>  userOpt= Optional.of(user);
+
+           //when(com.userbackend.jwt.utils.UtilToken.getEmailFromToken(any(String.class))).thenReturn(""); 
+
+           String authorizationHeader="Bearer ey";
+
+
+            try {
+
+                 Optional<UserResponseDTO> userResponseDTOOptional =userService.loadUser( authorizationHeader);
+           
+            } catch (InvalidTokenException e) {
+                assertEquals("Token no válido", e.getErrorMessage());
+            }
+       
+
+          
+    }
 }

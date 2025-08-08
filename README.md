@@ -35,9 +35,13 @@ Ejecutar test, Construir y ejecutar el proyecto con gradle
 Continuando en la ventana de comandos anterior
 1. Ejecutar test:
     gradle test
-2. Construir el proyecto con gradle: 
+2. Para ejecutar reporte de test:
+   gradle build jacocoTestReport
+3. Abrir con un navegador la ruta:
+   build/reports/jacoco/test/html/com.userbackend.jwt.services/UserServiceImpl.html
+4. Construir el proyecto con gradle: 
     gradle build
-3. Ejecutar el proyecto: 
+5. Ejecutar el proyecto: 
 java -jar build/libs/userbackend-0.0.1-SNAPSHOT.jar
 
 Probar los servicios con una herramienta como POSTMAN
